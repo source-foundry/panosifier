@@ -3,6 +3,8 @@
 
 import pytest
 
+import panosifier
+
 
 def test_tests():
     assert True
