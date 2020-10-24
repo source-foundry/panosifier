@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 import sys
 from typing import List
 
@@ -9,6 +10,26 @@ from . import __version__
 
 def main() -> None:  # pragma: no cover
     run(sys.argv[1:])
+
+
+def _validate_args(args: argparse.Namespace) -> None:
+    if args.panose and (
+        args.familytype
+        or args.serifstyle
+        or args.weight
+        or args.proportion
+        or args.contrast
+        or args.strokevar
+        or args.armstyle
+        or args.letterform
+        or args.midline
+        or args.xheight
+    ):
+        sys.stderr.write(
+            f"[ERROR] the '--panose' option cannot be used with other panose definition "
+            f"options{os.linesep}"
+        )
+        sys.exit(1)
 
 
 def run(argv: List[str]) -> None:
@@ -36,6 +57,5 @@ def run(argv: List[str]) -> None:
     parser.add_argument("--xheight", type=int, required=False, help="XHeight value")
     parser.add_argument("PATH", nargs="+", help="Font file path")
     args = parser.parse_args(argv)
-
-    if args.version:
-        pass
+    # validate exclusive argument combinations
+    _validate_args(args)
