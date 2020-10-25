@@ -16,7 +16,6 @@
 
 import argparse
 import os
-import pprint
 import sys
 from typing import List
 
@@ -153,13 +152,17 @@ def run(argv: List[str]) -> None:
             tt_edited = TTFont(fontpath)
             new_panose = tt_edited["OS/2"].panose.__dict__
             print(f"{fontpath} panose:")
-            panose_string = pprint.pformat(new_panose, indent=3, sort_dicts=False)
-            panose_string = panose_string.replace("{", " ")
-            panose_string = panose_string.replace("}", "")
-            panose_string = panose_string.replace("b", "")
-            panose_string = panose_string.replace("'", "")
-            panose_string = panose_string.replace(",", "")
-            print(panose_string)
+            space = " " * 3
+            print(f"{space}FamilyType: {new_panose['bFamilyType']}")
+            print(f"{space}SerifStyle: {new_panose['bSerifStyle']}")
+            print(f"{space}Weight: {new_panose['bWeight']}")
+            print(f"{space}Proportion: {new_panose['bProportion']}")
+            print(f"{space}Contrast: {new_panose['bContrast']}")
+            print(f"{space}StrokeVariation: {new_panose['bStrokeVariation']}")
+            print(f"{space}ArmStyle: {new_panose['bArmStyle']}")
+            print(f"{space}LetterForm: {new_panose['bLetterForm']}")
+            print(f"{space}Midline: {new_panose['bMidline']}")
+            print(f"{space}XHeight: {new_panose['bXHeight']}")
         except Exception as e:
             sys.stderr.write(f"[ERROR] '{fontpath}' error: {str(e)}{os.linesep}")
             sys.exit(1)
