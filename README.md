@@ -30,11 +30,69 @@ See the documentation below for additional details.
 
 ## Installation
 
+This project requires a Python 3.6+ interpreter.
+
+Installation in a Python3 virtual environment is recommended.
+
+Use any of the following installation approaches:
+
+### pip install from PyPI
+
+```
+$ pip3 install panosifier
+```
+
+### pip install from source
+
+```
+$ git clone https://github.com/source-foundry/panosifier.git
+$ cd panosifier
+$ pip3 install -r requirements.txt .
+```
+
+### Developer install from source
+
+The following approach installs the project and associated optional developer dependencies so that source changes are available without the need for re-installation.
+
+```
+$ git clone https://github.com/source-foundry/panosifier.git
+$ cd panosifier
+$ pip3 install --ignore-installed -r requirements.txt -e ".[dev]"
+```
+
 ## Usage
+
+
 
 ## Contributing
 
+Contributions are warmly welcomed.  A development dependency environment can be installed in editable mode with the developer installation documentation above.
 
+Please use the standard Github pull request approach to propose source changes.
+
+### Source file linting
+
+Python source files are linted with `flake8`.  See the Makefile `test-lint` target for details.
+
+### Testing
+
+The project runs continuous integration testing on the GitHub Actions service with the `pytest` toolchain.  Test modules are located in the `tests` directory of the repository.
+
+Local testing by Python interpreter version can be performed with the following command executed from the root of the repository:
+
+```
+$ tox -e [PYTHON INTERPRETER VERSION]
+```
+
+Please see the `tox` documentation for additional details.
+
+### Test coverage
+
+Unit test coverage is executed with the `coverage` tool.  See the Makefile `test-coverage` target for details.
+
+## Acknowledgments
+
+panosifier is built with the fantastic free [fonttools](https://github.com/fonttools/fonttools) Python library.
 
 ## License
 
