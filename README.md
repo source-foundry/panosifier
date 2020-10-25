@@ -11,7 +11,7 @@
 
 ## About
 
-panosifier is a Python 3.6+ command line application that edits [panose data](https://monotype.github.io/panose/pan1.htm) in fonts.  The tool edits the [OpenType specification defined panose fields](https://docs.microsoft.com/en-us/typography/opentype/spec/os2#panose).
+panosifier is a Python 3.6+ command line application that edits [panose data](https://monotype.github.io/panose/pan1.htm) in fonts.  The tool edits the [OpenType specification OS/2 table panose fields](https://docs.microsoft.com/en-us/typography/opentype/spec/os2#panose).
 
 ## Why do I need this tool?
 
