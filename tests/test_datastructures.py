@@ -1,7 +1,7 @@
 import os
 
-from fontTools.ttLib import TTFont
 import pytest
+from fontTools.ttLib import TTFont
 
 from panosifier import datastructures
 
