@@ -82,7 +82,7 @@ def run(argv: List[str]) -> None:
     # ===========================================================
     # argparse command line argument definitions
     # ===========================================================
-    parser = argparse.ArgumentParser(description="Font panose data editor")
+    parser = argparse.ArgumentParser(description="Panose data editor for fonts")
     parser.add_argument(
         "-v", "--version", action="version", version=f"panosifier v{__version__}"
     )
