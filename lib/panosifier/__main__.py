@@ -16,17 +16,21 @@
 
 import argparse
 import os
+import pprint
 import sys
 from typing import List
 
+from fontTools.ttLib import TTFont  # type: ignore
+
 from . import __version__
+from .datastructures import Panose
 
 
 def main() -> None:  # pragma: no cover
     run(sys.argv[1:])
 
 
-def _validate_args(args: argparse.Namespace) -> None:
+def validate_args_exclusive(args: argparse.Namespace) -> None:
     if args.panose and (
         args.familytype
         or args.serifstyle
@@ -44,6 +48,35 @@ def _validate_args(args: argparse.Namespace) -> None:
             f"options{os.linesep}"
         )
         sys.exit(1)
+
+
+def validate_args_at_least_one_definition(args: argparse.Namespace) -> None:
+    if not args.panose and not (
+        args.familytype
+        or args.serifstyle
+        or args.weight
+        or args.proportion
+        or args.contrast
+        or args.strokevar
+        or args.armstyle
+        or args.letterform
+        or args.midline
+        or args.xheight
+    ):
+        sys.stderr.write(
+            f"[ERROR] include at least one panose definition in your command "
+            f"{os.linesep}"
+        )
+        sys.exit(1)
+
+
+def validate_args_filepaths_exist(args: argparse.Namespace) -> None:
+    for fontpath in args.PATH:
+        if not os.path.isfile(fontpath):
+            sys.stderr.write(
+                f"[ERROR] '{fontpath}' does not appear to be a valid file{os.linesep}"
+            )
+            sys.exit(1)
 
 
 def run(argv: List[str]) -> None:
@@ -71,5 +104,62 @@ def run(argv: List[str]) -> None:
     parser.add_argument("--xheight", type=int, required=False, help="XHeight value")
     parser.add_argument("PATH", nargs="+", help="Font file path")
     args = parser.parse_args(argv)
-    # validate exclusive argument combinations
-    _validate_args(args)
+
+    # additional CL args validations
+    validate_args_at_least_one_definition(args)
+    validate_args_exclusive(args)
+    validate_args_filepaths_exist(args)
+
+    # panose data edit implementation
+    for fontpath in args.PATH:
+        try:
+            tt = TTFont(fontpath)
+        except Exception as e:
+            sys.stderr.write(f"[ERROR] during edit of '{fontpath}': {str(e)}{os.linesep}")
+            sys.exit(1)
+
+        # define with comma-delimited panose definition string
+        if args.panose:
+            panose = Panose()
+            try:
+                panose.set_panose_with_comma_delim_string(args.panose)
+            except ValueError as e:
+                sys.stderr.write(f"[ERROR] {str(e)}{os.linesep}")
+                sys.exit(1)
+        # or define with individual panose definition arguments
+        else:
+            try:
+                panose = Panose(
+                    familytype=args.familytype,
+                    serifstyle=args.serifstyle,
+                    weight=args.weight,
+                    proportion=args.proportion,
+                    contrast=args.contrast,
+                    strokevar=args.strokevar,
+                    armstyle=args.armstyle,
+                    letterform=args.letterform,
+                    midline=args.midline,
+                    xheight=args.xheight,
+                )
+            except ValueError as e:
+                sys.stderr.write(f"[ERROR] {str(e)}{os.linesep}")
+                sys.exit(1)
+
+        try:
+            tt = panose.set_font_panose_data(TTFont(fontpath))
+            tt.save(fontpath)
+
+            # edited font panose data report
+            tt_edited = TTFont(fontpath)
+            new_panose = tt_edited["OS/2"].panose.__dict__
+            print(f"{fontpath} panose:")
+            panose_string = pprint.pformat(new_panose, indent=3, sort_dicts=False)
+            panose_string = panose_string.replace("{", " ")
+            panose_string = panose_string.replace("}", "")
+            panose_string = panose_string.replace("b", "")
+            panose_string = panose_string.replace("'", "")
+            panose_string = panose_string.replace(",", "")
+            print(panose_string)
+        except Exception as e:
+            sys.stderr.write(f"[ERROR] '{fontpath}' error: {str(e)}{os.linesep}")
+            sys.exit(1)
