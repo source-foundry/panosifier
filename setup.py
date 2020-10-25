@@ -6,7 +6,7 @@ from setuptools import find_packages, setup
 
 # Package meta-data.
 NAME = "panosifier"
-DESCRIPTION = "Font panose data editor"
+DESCRIPTION = "Panose data editor for fonts"
 LICENSE = "Apache License v2.0"
 URL = "https://github.com/source-foundry/panosifier"
 EMAIL = "chris@sourcefoundry.org"
