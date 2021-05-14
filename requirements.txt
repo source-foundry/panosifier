@@ -4,5 +4,5 @@
 #
 #    pip-compile requirements.in
 #
-fonttools==4.22.1
+fonttools==4.23.0
     # via -r requirements.in
